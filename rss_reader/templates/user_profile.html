@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+
+<hr>
+<table>
+    <tr valign="middle">
+        <td rowspan="4" colspan="2"><img src="{{ user.avatar(128) }}"></td>
+        <td>&ensp;</td>
+        <td>
+          <h1>{{ user.username }}</h1>
+          {{user.email}}
+          {% if user.description %}
+          <h2>Description</h2>
+          <p>{{ user.description }}</p>
+          {% endif %}
+          {% if user.last_view %}<p>Last seen on: {{ user.last_view.date() }}</p>{% endif %}
+          <p>{{user.followers.count()}} followers, {{user.followed.count()}} following</p>
+          {% if user == current_user %}
+            <p><a href="{{ url_for('edit_profile') }}">Edit your profile</a></p>
+          {% elif current_user.is_following(user) %}
+            <p><a href="{{ url_for('unfollow', username=user.username) }}">Unfollow</a></p>
+          {% else %}
+            <p><a href="{{ url_for('follow', username=user.username) }}">Follow</a></p>
+          {% endif %}
+        </td>
+</table>
+<hr>
+{% if form %}
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.content.label }}<br>
+        {{ form.content(cols=32, rows=4) }}<br>
+        {% for error in form.content.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+<hr>
+{% endif %}
+
+
+{% for post in posts %}
+{% include "_post.html" %}
+{% endfor %}
+
+{% if prev_url %}
+<a href="{{ prev_url }}">Previous posts</a>
+{% endif %}
+{% if next_url %}
+<a href="{{ next_url }}">Next posts</a>
+{% endif %}
+
+{% endblock content %}

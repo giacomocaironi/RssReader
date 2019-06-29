@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Register</h1>
+    <form class="" action="" method="post" novalidate>
+      {{form.hidden_tag()}}
+      <p>
+        {{form.username.label}}
+        <br>
+        {{form.username}}
+        {% for error in form.username.errors %}
+        {{error}}
+        {% endfor %}
+      </p>
+      <p>
+        {{form.email.label}}
+        <br>
+        {{form.email}}
+        {% for error in form.email.errors %}
+        {{error}}
+        {% endfor %}
+      </p>
+      <p>
+        {{form.password.label}}
+        <br>
+        {{form.password(size=32)}}
+        {% for error in form.password.errors %}
+        {{error}}
+        {% endfor %}
+      </p>
+      <p>
+        {{form.password_check.label}}
+        <br>
+        {{form.password_check(size=32)}}
+        {% for error in form.password_check.errors %}
+        {{error}}
+        {% endfor %}
+      </p>
+      <p>{{form.submit}}</p>
+    </form>
+{% endblock content %}

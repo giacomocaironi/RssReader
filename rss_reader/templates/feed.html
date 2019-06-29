@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>{{title}}</h1>
+{% if current_user.is_following(feed) %}
+<a href="{{ url_for('unfollow', rss_feed=feed.id) }}">Unfollow</a>
+{% else %}
+<a href="{{ url_for('follow', rss_feed=feed.id) }}">Follow</a>
+{% endif %}
+{% for feed in feeds %}
+<hr>
+<h1><a href="{{feed.href}}">{{feed.title}}</a></h1>
+<small>{{feed.date}}</small>
+<p>{{feed.content|safe}}
+  {% if feed.content|length > 500 %}
+  <a href="{{feed.href}}"> continue</a>
+  {% endif %}
+</p>
+{% endfor %}
+<hr>
+
+{% endblock content %}

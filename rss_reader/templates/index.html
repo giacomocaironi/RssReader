@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>{{length}}</h2>
+{% for feed in feeds %}
+<hr>
+<h1><a href="{{feed.href}}">{{feed.title}}</a></h1>
+<small>{{feed.date}}</small>
+<p>{{feed.content|safe}}
+  {% if feed.content|length > 500 %}
+  <a href="{{feed.href}}"> continue</a>
+  {% endif %}
+</p>
+{% endfor %}
+<hr>
+
+{% endblock content %}
+
+{% block sidebar %}
+<div class="col-2">
+  <div class="container">
+    <h2>Your feeds</h2>
+    <hr>
+    <ul>
+      {% for feed in current_user.feeds.all() %}
+        <li>
+          <a href="{{ url_for('feed', feed_id=feed.id) }}"><h3>{{feed.title}}</h3></a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock sidebar %}
