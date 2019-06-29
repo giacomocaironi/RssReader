@@ -4,56 +4,7 @@ from rss_reader.models import User, RssEntry, RssFeed
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from rss_reader.forms import LoginForm, RegistrationForm, AddRssForm
-
-# from datetime import datetime
-import requests
-import feedparser
-
-# from html.parser import HTMLParser
-from dateutil import parser
-from lxml.html.clean import clean_html
-
-# from .rss_test import parse_file, parse_feeds
-
-from requests_futures.sessions import FuturesSession
-
-
-def parse_file(link):
-    data = requests.get(link).text  # get rss file location
-    return feedparser.parse(data)  # parse and return rss file
-
-
-def parse_feeds():
-    session = FuturesSession()
-    feeds = RssFeed.query.all()
-    urls = []
-    for feed in feeds:
-        urls.append(feed.link)
-    responses = []
-    for url in urls:
-        responses.append(session.get(url))
-    for i in range(len(urls)):
-        feed = feeds[i]
-        data = responses[i].result()
-        add_new_entries(feedparser.parse(data.text), feed)
-
-
-def add_new_entries(data, feed):
-    for entry in data.entries:
-        time = parser.parse(entry.updated)
-        try:
-            content = clean_html(entry.summary[:500])
-            entry_db = RssEntry(
-                title=entry.title,
-                date=time,
-                feed_id=feed.id,
-                content=content,
-                href=entry.link,
-            )
-            db.session.add(entry_db)
-            db.session.commit()
-        except:
-            db.session.rollback()
+from rss_reader.parser import parse_file, parse_feeds, add_new_entries
 
 
 @app.before_request

@@ -30,9 +30,11 @@ class User(db.Model, UserMixin):
     def get_feed_entries(self):  # to improve
         if len(self.feeds.all()) == 0:
             return []
-        entries = self.feeds.all()[0].posts
+        first_entry = self.feeds.all()[0].posts
+        entries = []
         for entry in self.feeds.all()[1:]:
-            entries = entries.union(entry.posts)
+            entries.append(entry.posts)
+        entries = first_entry.union(*entries)
         return entries.order_by(RssEntry.date.desc()).all()
 
     def set_password(self, password):

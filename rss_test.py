@@ -9,7 +9,7 @@ from lxml.html.clean import clean_html
 
 from requests_futures.sessions import FuturesSession
 
-session = FuturesSession(max_workers=8)
+session = FuturesSession(max_workers=256)
 
 
 class MyHtmlParser(HTMLParser):
@@ -84,6 +84,7 @@ def parse_feeds():
 
 def add_new_entries(data, feed):
     for entry in data.entries:
+        print(entry)
         # https://stackoverflow.com/questions/51206500/how-to-convert-a-string-datetime-with-unknown-timezone-to-timestamp-in-python
         # timezone_info = {"EDT": "UTC -4", "EST": "UTC -5"}
         time = parser.parse(entry.updated)  # tzinfos=timezone_info)
@@ -106,14 +107,24 @@ def add_new_entries(data, feed):
 # links = find_links()
 # parse_feeds()
 
-feeds = RssFeed.query.all()
-urls = []
-for feed in feeds:
-    urls.append(feed.link)
-responses = []
-for url in urls:
-    responses.append(session.get(url))
-for i in range(len(urls)):
-    feed = feeds[i]
-    data = responses[i].result()
-    add_new_entries(feedparser.parse(data.text), feed)
+
+def parse_files_futures():
+    feeds = RssFeed.query.all()
+    urls = []
+    for feed in feeds:
+        urls.append(feed.link)
+    responses = []
+    for url in urls:
+        responses.append(session.get(url))
+    for i in range(len(urls)):
+        try:
+            feed = feeds[i]
+            data = responses[i].result()
+            add_new_entries(feedparser.parse(data.text), feed)
+        except Exception as e:
+            print(e)
+
+
+# from sqlalchemy import func
+# session.query(Story).filter(func.json_contains(Story.section_ids, X) == 1).all()
+parse_files_futures()
