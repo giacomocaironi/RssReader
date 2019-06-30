@@ -35,3 +35,8 @@ class RegistrationForm(FlaskForm):
 class AddRssForm(FlaskForm):
     rss_link = StringField("RssLink", validators=[DataRequired(), Length(max=256)])
     submit = SubmitField("subscribe")
+
+
+class SearchForm(FlaskForm):
+    q = StringField("search", validators=[DataRequired(), Length(max=256)])
+    submit = SubmitField("search")

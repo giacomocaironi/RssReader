@@ -3,7 +3,7 @@ from flask import render_template, flash, redirect, url_for, request
 from rss_reader.models import User, RssEntry, RssFeed
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-from rss_reader.forms import LoginForm, RegistrationForm, AddRssForm
+from rss_reader.forms import LoginForm, RegistrationForm, AddRssForm, SearchForm
 from rss_reader.parser import parse_file, parse_feeds, add_new_entries
 
 
@@ -12,19 +12,29 @@ def before_request():
     pass
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 @login_required
 def index():
+    page = request.args.get("page", 1, type=int)
     feeds = current_user.get_feed_entries()
-    feed_length = len(feeds)
-    return render_template("index.html", feeds=feeds, length=feed_length)
+    feed_length = feeds.count()
+    feeds = feeds.paginate(page, 25, False)
+    next_url = url_for("index", page=feeds.next_num) if feeds.has_next else None
+    prev_url = url_for("index", page=feeds.prev_num) if feeds.has_prev else None
+    return render_template(
+        "index.html",
+        feeds=feeds.items,
+        length=feed_length,
+        prev_url=prev_url,
+        next_url=next_url,
+    )
 
 
 @app.route("/feed/<feed_id>")
 @login_required
 def feed(feed_id):
     feed = RssFeed.query.filter_by(id=feed_id).first_or_404()
-    entries = feed.posts.all()
+    entries = feed.posts.order_by(RssEntry.date.desc())
     return render_template("feed.html", feeds=entries, title=feed.title, feed=feed)
 
 
@@ -37,8 +47,16 @@ def update():
 @app.route("/explore")
 @login_required
 def explore():
-    feeds = RssFeed.query.all()
-    return render_template("explore.html", feeds=feeds)
+    question = request.args.get("q", "", type=str)
+    form = SearchForm()
+    if form.validate_on_submit():
+        question = form.q.data
+    if question:
+        feeds = RssFeed.query.filter(RssFeed.title.contains(question)).all()
+    else:
+        feeds = []
+    form.q.data = question
+    return render_template("explore.html", feeds=feeds, form=form)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -99,6 +117,7 @@ def add():
                 db.session.rollback()
             try:
                 add_new_entries(data, new_feed)
+                db.session.commit()
             except:
                 db.session.rollback()
         except:
@@ -119,7 +138,7 @@ def follow(rss_feed):
         return redirect(url_for("explore"))
     current_user.feeds.append(feed)
     db.session.commit()
-    return redirect(url_for("explore"))
+    return redirect(url_for("index"))
 
 
 @app.route("/unfollow/<rss_feed>")
@@ -134,4 +153,4 @@ def unfollow(rss_feed):
         return redirect(url_for("explore"))
     current_user.feeds.remove(feed)
     db.session.commit()
-    return redirect(url_for("explore"))
+    return redirect(url_for("index"))

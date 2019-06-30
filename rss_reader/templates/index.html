@@ -2,17 +2,36 @@
 {% block content %}
 
 <h2>{{length}}</h2>
+
+{% if prev_url %}
+<a href="{{ prev_url }}">Previous posts</a>
+{% endif %}
+{% if next_url %}
+<a href="{{ next_url }}">Next posts</a>
+{% endif %}
+
 {% for feed in feeds %}
-<hr>
-<h1><a href="{{feed.href}}">{{feed.title}}</a></h1>
-<small>{{feed.date}}</small>
-<p>{{feed.content|safe}}
-  {% if feed.content|length > 500 %}
-  <a href="{{feed.href}}"> continue</a>
-  {% endif %}
-</p>
+<div class="card" style="margin: 10px">
+  <div class="card-body">
+    <h1><a href="{{feed.href}}">{{feed.title}}</a></h1>
+    <small>{{feed.date}}</small>
+    <small><a href="{{ url_for('feed', feed_id=feed.feed_file.id) }}">{{feed.feed_file.title}}</a></small>
+    <p>{{feed.content|safe}}
+      {% if feed.content|length > 500 %}
+      <a href="{{feed.href}}"> continue</a>
+      {% endif %}
+    </p>
+  </div>
+</div>
 {% endfor %}
 <hr>
+
+{% if prev_url %}
+<a href="{{ prev_url }}">Previous posts</a>
+{% endif %}
+{% if next_url %}
+<a href="{{ next_url }}">Next posts</a>
+{% endif %}
 
 {% endblock content %}
 

@@ -1,17 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
 
+<form class="" action="" method="get">
+  <p>
+    {{form.q.label}}
+    {{form.q}}
+    {% for error in form.q.errors %}
+    {{error}}
+    {% endfor %}
+  </p>
+  <p>
+    {{form.submit}}
+  </p>
+</form>
+
 {% for feed in feeds %}
-<hr>
-<h2><a href="{{ url_for('feed', feed_id=feed.id) }}">{{feed.title}}</a> </h2>
-<p>
-  {% if current_user.is_following(feed) %}
-  <a href="{{ url_for('unfollow', rss_feed=feed.id) }}">Unfollow</a>
-  {% else %}
-  <a href="{{ url_for('follow', rss_feed=feed.id) }}">Follow</a>
-  {% endif %}
-</p>
+<div class="card" style="margin: 10px">
+  <div class="card-body">
+    <h2><a href="{{ url_for('feed', feed_id=feed.id) }}">{{feed.title}}</a></h2>
+    <p>
+      {% if current_user.is_following(feed) %}
+      <a href="{{ url_for('unfollow', rss_feed=feed.id) }}">Unfollow</a>
+      {% else %}
+      <a href="{{ url_for('follow', rss_feed=feed.id) }}">Follow</a>
+      {% endif %}
+    </p>
+  </div>
+</div>
 {% endfor %}
-<hr>
 
 {% endblock content %}

@@ -84,7 +84,6 @@ def parse_feeds():
 
 def add_new_entries(data, feed):
     for entry in data.entries:
-        print(entry)
         # https://stackoverflow.com/questions/51206500/how-to-convert-a-string-datetime-with-unknown-timezone-to-timestamp-in-python
         # timezone_info = {"EDT": "UTC -4", "EST": "UTC -5"}
         time = parser.parse(entry.updated)  # tzinfos=timezone_info)
