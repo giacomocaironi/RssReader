@@ -11,4 +11,24 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = "login"
 
-from rss_reader import routes, models, errors
+from rss_reader import routes, models, errors, parser
+from threading import Thread
+import time
+import logging
+import os
+
+
+def wait_print():
+    while True:
+        try:
+            parser.parse_feeds()
+        except:
+            pass
+
+
+# https://stackoverflow.com/questions/25504149/why-does-running-the-flask-dev-server-run-itself-twice
+# if os.environ.get("WERKZEUG_RUN_MAIN") != "true":  # prevents double threads
+#     logging.basicConfig(level=logging.INFO)
+#     print(1)
+#     Thread(target=wait_print, args=()).start()
+#     print(1)

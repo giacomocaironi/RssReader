@@ -17,17 +17,15 @@ def before_request():
 def index():
     page = request.args.get("page", 1, type=int)
     feeds = current_user.get_feed_entries()
-    feed_length = feeds.count()
-    feeds = feeds.paginate(page, 25, False)
-    next_url = url_for("index", page=feeds.next_num) if feeds.has_next else None
-    prev_url = url_for("index", page=feeds.prev_num) if feeds.has_prev else None
-    return render_template(
-        "index.html",
-        feeds=feeds.items,
-        length=feed_length,
-        prev_url=prev_url,
-        next_url=next_url,
-    )
+    if feeds != []:
+        feeds = feeds.paginate(page, 25, False)
+        next_url = url_for("index", page=feeds.next_num) if feeds.has_next else None
+        prev_url = url_for("index", page=feeds.prev_num) if feeds.has_prev else None
+        return render_template(
+            "index.html", feeds=feeds.items, prev_url=prev_url, next_url=next_url
+        )
+    else:
+        return render_template("index.html", feeds=[], prev_url=None, next_url=None)
 
 
 @app.route("/feed/<feed_id>")

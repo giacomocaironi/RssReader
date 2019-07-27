@@ -7,4 +7,5 @@ def make_shell_context():
     return {"db": db, "User": User, "RssFeed": RssFeed, "RssEntry": RssEntry}
 
 
-app.run(host="0.0.0.0")
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")

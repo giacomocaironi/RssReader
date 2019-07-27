@@ -7,6 +7,8 @@ from rss_reader.models import RssEntry, RssFeed
 from rss_reader import app, db
 from html.parser import HTMLParser
 from datetime import datetime, timedelta
+import logging
+import time
 
 
 class MyHtmlParser(HTMLParser):
@@ -78,16 +80,24 @@ def parse_feeds():
             feed = feeds[i]
             data = responses[i].result()
             add_new_entries(feedparser.parse(data.text), feed)
+            # logging.info(str(time.time()) + " " + str(i))
         except Exception as e:
             print(e)
+            logging.info(e)
     # delete_entries() uncomment this and comment the previous to delete every
     # entry not in the date, also the ones in the feed file
+    logging.info("feeds parsed")
+    logging.info(datetime.now())
 
 
 def add_new_entries(data, feed):
     for entry in data.entries:
         time = parser.parse(entry.updated)
         try:
+            if (
+                RssEntry.query.filter_by(href=entry.link, feed_id=feed.id).count() > 0
+            ):  # do not add doubles
+                continue
             content = clean_html(entry.summary[:500])
             entry_db = RssEntry(
                 title=entry.title,
@@ -104,7 +114,7 @@ def add_new_entries(data, feed):
 
 # assolutamente da migliorare
 def delete_entries():
-    date = datetime.utcnow() + timedelta(days=-15)
+    date = datetime.utcnow() + timedelta(days=-7)
     for entry in RssEntry.query.filter(RssEntry.date < date):
         db.session.delete(entry)
     for entry in RssEntry.query.filter_by(feed_file=None):
