@@ -1,4 +1,5 @@
 from rss_reader.parser import parse_feeds
+import logging
 
 
 if __name__ == "__main__":
@@ -6,5 +7,7 @@ if __name__ == "__main__":
     while True:
         try:
             parse_feeds()
+        except KeyboardInterrupt:
+            break
         except:
             pass

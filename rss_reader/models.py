@@ -51,10 +51,14 @@ class User(db.Model, UserMixin):
 
 
 class RssFeed(db.Model):
+    __searchable__ = ["title"]
     title = db.Column(db.String(128))
     id = db.Column(db.Integer, primary_key=True)
     link = db.Column(db.String(128), unique=True)
     posts = db.relationship("RssEntry", backref="feed_file", lazy="dynamic")
+
+    def __repr__(self):
+        return self.title
 
 
 class RssEntry(db.Model):
