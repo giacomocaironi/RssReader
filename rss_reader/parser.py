@@ -2,7 +2,7 @@ from requests_futures.sessions import FuturesSession
 import requests
 import feedparser
 from dateutil import parser
-from lxml.html.clean import clean_html
+from lxml.html.clean import clean_html, Cleaner
 from rss_reader.models import RssEntry, RssFeed
 from rss_reader import app, db
 from html.parser import HTMLParser
@@ -98,7 +98,8 @@ def add_new_entries(data, feed):
                 RssEntry.query.filter_by(href=entry.link, feed_id=feed.id).count() > 0
             ):  # do not add doubles
                 continue
-            content = clean_html(entry.summary[:500])
+            cleaner = Cleaner(kill_tags=["img"])
+            content = cleaner.clean_html(entry.summary[:500])
             entry_db = RssEntry(
                 title=entry.title,
                 date=time,

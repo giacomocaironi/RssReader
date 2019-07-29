@@ -38,5 +38,5 @@ class AddRssForm(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-    q = StringField("search", validators=[DataRequired(), Length(max=256)])
-    submit = SubmitField("search")
+    q = StringField("Search", validators=[DataRequired(), Length(max=256)])
+    submit = SubmitField("Search")

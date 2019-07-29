@@ -1,23 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Edit Profile</h1>
-<form class="" action="" method="post">
-  {{form.hidden_tag()}}
-  <p>
-    {{form.rss_link.label}}
-    {{form.rss_link}}
-    {% for error in form.rss_link.errors %}
-    {{error}}
-    {% endfor %}
-  </p>
-  <p>
-  </p>
-  <p>
-  </p>
-  <p>
-    {{form.submit}}
-  </p>
-</form>
+<div class="col">
+  <h1>Add new Rss Feed</h1>
+  <form class="" action="" method="post">
+    {{form.hidden_tag()}}
+    <p>
+      {{form.rss_link.label}}
+      {{form.rss_link}}
+      {% for error in form.rss_link.errors %}
+        {{error}}
+      {% endfor %}
+    </p>
+    <p>
+    </p>
+    <p>
+    </p>
+    <p>
+      {{form.submit}}
+    </p>
+  </form>
+</div>
 
 {% endblock content %}

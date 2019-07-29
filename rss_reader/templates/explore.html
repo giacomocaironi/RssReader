@@ -1,18 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-
-<form class="" action="" method="get">
-  <p>
-    {{form.q.label}}
-    {{form.q}}
-    {% for error in form.q.errors %}
-    {{error}}
-    {% endfor %}
-  </p>
-  <p>
-    {{form.submit}}
-  </p>
-</form>
+<div class="col container" style="margin: 10px">
+  <form class="form-inline my-2 my-lg-0" action="" method="get" novalidate>
+      {{form.q(placeholder="Search...", class_="form-control mr-sm-2")}}
+      {{form.submit(class_="btn btn-outline-success my-2 my-sm-0")}}
+      {% for error in form.q.errors %}
+      {{error}}
+      {% endfor %}
+  </form>
+</div>
 
 {% for feed in feeds %}
 <div class="card" style="margin: 10px">

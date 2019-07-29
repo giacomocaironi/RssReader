@@ -1,50 +1,59 @@
 {% extends "base.html" %}
+{% block css %}
+  <link rel="stylesheet" href={{url_for('static', filename='css/index.css')}}>
+{% endblock css %}
 {% block content %}
+<div class="horizontal-feeds">
+  {% for feed in current_user.feeds.all() %}
+    <div class="card card-horizontal-scroll" style="margin: 10px">
+      <div class="card-body">
+        <a href="{{ url_for('feed', feed_id=feed.id) }}"><h3>{{feed.title}}</h3></a>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+<div class="row">
+  <div class="col-2 d-none d-lg-block" id="sidebar">
+      <h2>Your feeds</h2>
+      <hr>
+      <ul>
+        {% for feed in current_user.feeds.all() %}
+          <li>
+            <a href="{{ url_for('feed', feed_id=feed.id) }}"><h3>{{feed.title}}</h3></a>
+          </li>
+        {% endfor %}
+      </ul>
+  </div>
+  <div class="col-12 col-lg-10">
+    
+    {% if prev_url %}
+    <a class="url" href="{{ prev_url }}">Previous posts</a>
+    {% endif %}
+    {% if next_url %}
+    <a class="url next-url" href="{{ next_url }}">Next posts</a>
+    {% endif %}
 
-{% if prev_url %}
-<a href="{{ prev_url }}">Previous posts</a>
-{% endif %}
-{% if next_url %}
-<a href="{{ next_url }}">Next posts</a>
-{% endif %}
+    {% for feed in feeds %}
+    <div class="card" style="margin: 10px">
+      <div class="card-body">
+        <h1><a href="{{feed.href}}">{{feed.title}}</a></h1>
+        <small>{{feed.date}}</small>
+        <small><a href="{{ url_for('feed', feed_id=feed.feed_file.id) }}">{{feed.feed_file.title}}</a></small>
+        <p>{{feed.content|safe}}</p>
+        {% if feed.content|length > 500 %}
+          <p><a href="{{feed.href}}"> continue</a></p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
 
-{% for feed in feeds %}
-<div class="card" style="margin: 10px">
-  <div class="card-body">
-    <h1><a href="{{feed.href}}">{{feed.title}}</a></h1>
-    <small>{{feed.date}}</small>
-    <small><a href="{{ url_for('feed', feed_id=feed.feed_file.id) }}">{{feed.feed_file.title}}</a></small>
-    <p>{{feed.content|safe}}
-      {% if feed.content|length > 500 %}
-      <a href="{{feed.href}}"> continue</a>
-      {% endif %}
-    </p>
+    {% if prev_url %}
+    <a class="url" href="{{ prev_url }}">Previous posts</a>
+    {% endif %}
+    {% if next_url %}
+    <a class="url next-url" href="{{ next_url }}">Next posts</a>
+    {% endif %}
   </div>
 </div>
-{% endfor %}
-<hr>
-
-{% if prev_url %}
-<a href="{{ prev_url }}">Previous posts</a>
-{% endif %}
-{% if next_url %}
-<a href="{{ next_url }}">Next posts</a>
-{% endif %}
 
 {% endblock content %}
-
-{% block sidebar %}
-<div class="col-2">
-  <div class="container">
-    <h2>Your feeds</h2>
-    <hr>
-    <ul>
-      {% for feed in current_user.feeds.all() %}
-        <li>
-          <a href="{{ url_for('feed', feed_id=feed.id) }}"><h3>{{feed.title}}</h3></a>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
-</div>
-{% endblock sidebar %}
