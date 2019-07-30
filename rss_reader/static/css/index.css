@@ -14,10 +14,20 @@
 }
 
 .url{
-  font-size: 1.3em;
+  font-size: 1.5em;
 }
 
 .next-url{
-  float:right;
-  display: inline-block;
+  float: right;
+}
+
+/* .card{
+  position: relative;\
+} */
+
+.card-feed{
+  /* background-color: orange; */
+  margin: 5px;
+  padding: 5px;
+  text-align: justify;
 }
