@@ -10,6 +10,7 @@ class Config(object):
     ) or "sqlite:///" + os.path.join(basedir, "app.db")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     POSTS_PER_PAGE_INDEX = 5
+    LOG_TO_STDOUT = os.environ.get("LOG_TO_STDOUT")
     # whoosh config
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     WHOOSH_BASE = "fulltextindex"
