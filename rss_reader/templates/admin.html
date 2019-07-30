@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form class="" action="" method="post" novalidate>
+  {{form.hidden_tag()}}
+<div class="card" style="margin: 10px">
+    <div class="card-body">
+      {{form.title.label}} {{form.title(class="form-control my-2 my-sm-0")}}
+      {{form.link.label}} {{form.link(class="form-control my-2 my-sm-0")}}
+      {{form.eliminate.label}} {{form.eliminate(class="form-control my-2 my-sm-0")}}
+    </div>
+</div>
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="margin:30px">Save</button>
+  <hr>
+</form>
+
+{% endblock content %}

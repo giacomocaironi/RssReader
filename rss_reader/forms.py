@@ -40,3 +40,9 @@ class AddRssForm(FlaskForm):
 class SearchForm(FlaskForm):
     q = StringField("Search", validators=[DataRequired(), Length(max=256)])
     submit = SubmitField("Search")
+
+
+class AdminModifyFeedForm(FlaskForm):
+    title = StringField("Title", validators=[DataRequired(), Length(max=128)])
+    link = StringField("Link", validators=[DataRequired(), Length(max=128)])
+    eliminate = BooleanField("Delete")

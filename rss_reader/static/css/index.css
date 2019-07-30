@@ -21,13 +21,9 @@
   float: right;
 }
 
-/* .card{
-  position: relative;\
-} */
-
 .card-feed{
   /* background-color: orange; */
   margin: 5px;
   padding: 5px;
-  text-align: justify;
+  display: inline-block;
 }

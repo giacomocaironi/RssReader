@@ -50,12 +50,21 @@ class User(db.Model, UserMixin):
         return "<User {}>".format(self.username)
 
 
+def get_site_from_link(link):
+    divided_link = link.split("/")
+    result = divided_link[0] + "//" + divided_link[2]
+    return result
+
+
 class RssFeed(db.Model):
     __searchable__ = ["title"]
     title = db.Column(db.String(128))
     id = db.Column(db.Integer, primary_key=True)
     link = db.Column(db.String(128), unique=True)
     posts = db.relationship("RssEntry", backref="feed_file", lazy="dynamic")
+
+    def get_favicon(self):
+        return get_site_from_link(self.link) + "/favicon.ico"
 
     def __repr__(self):
         return self.title

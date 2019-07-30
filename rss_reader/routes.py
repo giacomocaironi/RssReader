@@ -3,8 +3,24 @@ from flask import render_template, flash, redirect, url_for, request
 from rss_reader.models import User, RssEntry, RssFeed
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-from rss_reader.forms import LoginForm, RegistrationForm, AddRssForm, SearchForm
+from rss_reader.forms import (
+    LoginForm,
+    RegistrationForm,
+    AddRssForm,
+    SearchForm,
+    AdminModifyFeedForm,
+)
 from rss_reader.parser import parse_file, parse_feeds, add_new_entries
+
+
+def get_site_from_link(link):
+    divided_link = link.split("/")
+    result = divided_link[0] + "//" + divided_link[1]
+    return result
+
+
+def get_favicon(link):
+    return get_site_from_link(link) + "favicon.ico"
 
 
 @app.before_request
@@ -153,3 +169,27 @@ def unfollow(rss_feed):
     current_user.feeds.remove(feed)
     db.session.commit()
     return redirect(url_for("index"))
+
+
+@app.route("/admin/feeds/<rss_feed>", methods=["GET", "POST"])
+@login_required
+def admin(rss_feed):
+    if current_user.username != "Kappa":
+        return render_template("404.html"), 404
+    feed = RssFeed.query.filter_by(id=rss_feed).first_or_404()
+    form = AdminModifyFeedForm()
+    print(form.eliminate.data)
+    if form.validate_on_submit():
+        try:
+            if form.eliminate.data:
+                db.session.delete(feed)
+            else:
+                feed.title = form.title.data
+                feed.link = form.link.data
+                print(feed.title)
+            db.session.commit()
+        except:
+            db.session.rollback()
+    form.title.data = feed.title
+    form.link.data = feed.link
+    return render_template("admin.html", form=form)

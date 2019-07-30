@@ -6,22 +6,37 @@
 <div class="horizontal-feeds">
   {% for feed in current_user.feeds.all() %}
     <div class="card card-horizontal-scroll card-feed">
-        <a href="{{ url_for('feed', feed_id=feed.id) }}"><h3>{{feed.title}}</h3></a>
+      <img class="favicon" src="{{ feed.get_favicon() }}" alt="">
+        <a href="{{ url_for('feed', feed_id=feed.id) }}">{% if feed.title|length > 22 %}
+        {{feed.title[:22]}}...
+        {% else %}
+        {{feed.title}}
+        {% endif %}
+      </a>
     </div>
   {% endfor %}
 </div>
 <div class="row">
-  <div class="col-2 d-none d-lg-block" id="sidebar">
+  <div class="col-3 d-none d-lg-block" id="sidebar">
       <h2>Your feeds</h2>
       <hr>
       <!-- <ul> -->
         {% for feed in current_user.feeds.all() %}
-        <div class="card card-feed">
-            <a href="{{ url_for('feed', feed_id=feed.id) }}"><h3>{{feed.title}}</h3></a>
+        <div class="card card-feed" style="width:100%">
+            <img class="favicon" src="{{ feed.get_favicon() }}" alt="">
+            <a href="{{ url_for('feed', feed_id=feed.id) }}">
+              <small>
+                {% if feed.title|length > 22 %}
+                {{feed.title[:22]}}...
+                {% else %}
+                {{feed.title}}
+                {% endif %}
+            </small>
+          </a>
         </div>
         {% endfor %}
   </div>
-  <div class="col-12 col-lg-10">
+  <div class="col-12 col-lg-9">
 
     <div class="">
       {% if prev_url %}
@@ -37,7 +52,7 @@
     {% for feed in feeds %}
     <div class="card" style="margin: 10px">
       <div class="card-body">
-        <h1><a href="{{feed.href}}">{{feed.title}}</a></h1>
+        <h2><a href="{{feed.href}}">{{feed.title}}</a></h2>
         <small>{{feed.date}}</small>
         <small><a href="{{ url_for('feed', feed_id=feed.feed_file.id) }}">{{feed.feed_file.title}}</a></small>
         <p>{{feed.content|safe}}</p>
