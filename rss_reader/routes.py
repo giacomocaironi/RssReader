@@ -10,7 +10,12 @@ from rss_reader.forms import (
     SearchForm,
     AdminModifyFeedForm,
 )
-from rss_reader.parser import parse_file, parse_feeds, add_new_entries
+from rss_reader.parser import (
+    parse_file,
+    parse_feeds,
+    add_new_entries,
+    get_site_from_link,
+)
 
 
 @app.before_request
@@ -110,7 +115,10 @@ def add():
         try:
             data = parse_file(form.rss_link.data)
             try:  # prevent doubles
-                new_feed = RssFeed(title=data.feed.title, link=form.rss_link.data)
+                favicon = get_site_from_link(data.feed.link) + "/favicon.ico"
+                new_feed = RssFeed(
+                    title=data.feed.title, link=form.rss_link.data, favicon=favicon
+                )
                 db.session.add(new_feed)
                 db.session.commit()
             except:
@@ -161,9 +169,18 @@ def unfollow(rss_feed):
     return redirect(url_for("index"))
 
 
+@app.route("/admin/feeds/")
+@login_required
+def admin_feed_list():
+    if current_user.username != "Kappa":
+        return render_template("404.html"), 404
+    feeds = RssFeed.query.all()
+    return render_template("admin_feed_list.html", feeds=feeds)
+
+
 @app.route("/admin/feeds/<rss_feed>", methods=["GET", "POST"])
 @login_required
-def admin(rss_feed):
+def admin_feed_detail(rss_feed):
     if current_user.username != "Kappa":
         return render_template("404.html"), 404
     feed = RssFeed.query.filter_by(id=rss_feed).first_or_404()
@@ -173,13 +190,13 @@ def admin(rss_feed):
         try:
             if form.eliminate.data:
                 db.session.delete(feed)
+                return redirect(url_for("admin_feed_list"))
             else:
                 feed.title = form.title.data
                 feed.link = form.link.data
-                print(feed.title)
             db.session.commit()
         except:
             db.session.rollback()
     form.title.data = feed.title
     form.link.data = feed.link
-    return render_template("admin.html", form=form)
+    return render_template("admin_feed_detail.html", form=form)
