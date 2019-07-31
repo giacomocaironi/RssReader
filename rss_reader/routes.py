@@ -61,7 +61,12 @@ def explore():
     if form.validate_on_submit():
         question = form.q.data
     if question:
-        feeds = RssFeed.query.filter(RssFeed.title.contains(question)).all()
+        # feeds = RssFeed.query.filter(RssFeed.title.contains(question)).all()
+        feeds = (
+            RssFeed.query.filter(RssFeed.title.ilike("%{}%".format(question)))
+            .limit(10)
+            .all()
+        )
         # feeds = RssFeed.query.whoosh_search(question).all()
     else:
         feeds = []
