@@ -3,8 +3,9 @@
 
 {% for feed in feeds %}
 <div class="card">
-  <a href="{{url_for("admin_feed_detail", rss_feed=feed.id) }}"><h3>{{feed.title}}</h3></a>
-
+  <div class="card-body">
+    <a href="{{url_for("admin_feed_detail", rss_feed=feed.id) }}"><h3>{{feed.title}}</h3></a>
+  </div>
 </div>
 {% endfor %}
 

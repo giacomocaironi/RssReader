@@ -112,7 +112,7 @@ def add_new_entries(data, feed):
             ):  # do not add doubles
                 continue
             cleaner = Cleaner(kill_tags=["img"])
-            content = cleaner.clean_html(entry.summary[:500])
+            content = cleaner.clean_html(entry.summary[:1000])
             entry_db = RssEntry(
                 title=entry.title,
                 date=time,

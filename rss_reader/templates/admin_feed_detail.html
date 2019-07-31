@@ -4,9 +4,13 @@
 <form class="" action="" method="post" novalidate>
   {{form.hidden_tag()}}
 <div class="card" style="margin: 10px">
-    <div class="card-body">
+    <div class="card-body form-inline">
       {{form.title.label}} {{form.title(class="form-control my-2 my-sm-0")}}
+    </div>
+    <div class="card-body form-inline">
       {{form.link.label}} {{form.link(class="form-control my-2 my-sm-0")}}
+    </div>
+    <div class="card-body form-inline">
       {{form.eliminate.label}} {{form.eliminate(class="form-control my-2 my-sm-0")}}
     </div>
 </div>

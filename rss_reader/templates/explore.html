@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="col container" style="margin: 10px">
+<div class="">
   <form class="form-inline my-2 my-lg-0" action="" method="get" novalidate>
       {{form.q(placeholder="Search...", class_="form-control mr-sm-2")}}
-      {{form.submit(class_="btn btn-outline-success my-2 my-sm-0")}}
+      {{form.submit(class_="btn btn-outline-success my-2 my-sm-0 mobile-wide-button")}}
       {% for error in form.q.errors %}
       {{error}}
       {% endfor %}
