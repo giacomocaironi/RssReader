@@ -1,1 +1,1 @@
-web: flask db upgrade; gunicorn main:app; python3 parse_scheduler.py
+web: flask db upgrade; gunicorn main:app --daemon; python3 parse_scheduler.py
