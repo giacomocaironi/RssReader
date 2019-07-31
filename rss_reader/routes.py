@@ -124,7 +124,8 @@ def add():
             except:
                 db.session.rollback()
             try:
-                current_user.feeds.append(new_feed)
+                feed = RssFeed.query.filter_by(link=form.rss_link.data).first()
+                current_user.feeds.append(feed)
                 db.session.commit()
             except:
                 db.session.rollback()
@@ -185,7 +186,6 @@ def admin_feed_detail(rss_feed):
         return render_template("404.html"), 404
     feed = RssFeed.query.filter_by(id=rss_feed).first_or_404()
     form = AdminModifyFeedForm()
-    print(form.eliminate.data)
     if form.validate_on_submit():
         try:
             if form.eliminate.data:
