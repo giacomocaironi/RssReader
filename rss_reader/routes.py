@@ -190,6 +190,7 @@ def admin_feed_detail(rss_feed):
         try:
             if form.eliminate.data:
                 db.session.delete(feed)
+                db.session.commit()
                 return redirect(url_for("admin_feed_list"))
             else:
                 feed.title = form.title.data
