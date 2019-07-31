@@ -65,6 +65,12 @@ def parse_link(link):
     return None  # parse and return rss file
 
 
+def get_site_from_link(link):
+    divided_link = link.split("/")
+    result = divided_link[0] + "//" + divided_link[2]
+    return result
+
+
 def parse_feeds():
     session = FuturesSession(max_workers=256)
     feeds = RssFeed.query.all()
@@ -79,7 +85,14 @@ def parse_feeds():
         try:
             feed = feeds[i]
             data = responses[i].result()
-            add_new_entries(feedparser.parse(data.text), feed)
+            data = feedparser.parse(data.text)
+            try:
+                favicon = get_site_from_link(data.feed.link) + "/favicon.ico"
+                feed.favicon = favicon
+                db.session.commit()
+            except:
+                db.session.rollback()
+            add_new_entries(data, feed)
             # logging.info(str(time.time()) + " " + str(i))
         except Exception as e:
             print(e)

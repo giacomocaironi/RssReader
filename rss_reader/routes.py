@@ -13,16 +13,6 @@ from rss_reader.forms import (
 from rss_reader.parser import parse_file, parse_feeds, add_new_entries
 
 
-def get_site_from_link(link):
-    divided_link = link.split("/")
-    result = divided_link[0] + "//" + divided_link[1]
-    return result
-
-
-def get_favicon(link):
-    return get_site_from_link(link) + "favicon.ico"
-
-
 @app.before_request
 def before_request():
     pass

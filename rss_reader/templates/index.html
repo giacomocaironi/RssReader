@@ -6,7 +6,7 @@
 <div class="horizontal-feeds">
   {% for feed in current_user.feeds.all() %}
     <div class="card card-horizontal-scroll card-feed">
-      <img class="favicon" src="{{ feed.get_favicon() }}" alt="">
+      <img class="favicon" src="{{ feed.favicon }}" alt="">
         <a href="{{ url_for('feed', feed_id=feed.id) }}">{% if feed.title|length > 22 %}
         {{feed.title[:22]}}...
         {% else %}
@@ -23,11 +23,11 @@
       <!-- <ul> -->
         {% for feed in current_user.feeds.all() %}
         <div class="card card-feed" style="width:100%">
-            <img class="favicon" src="{{ feed.get_favicon() }}" alt="">
+            <img class="favicon" src="{{ feed.favicon }}" alt="">
             <a href="{{ url_for('feed', feed_id=feed.id) }}">
               <small>
-                {% if feed.title|length > 22 %}
-                {{feed.title[:22]}}...
+                {% if feed.title|length > 21 %}
+                {{feed.title[:21]}}...
                 {% else %}
                 {{feed.title}}
                 {% endif %}
