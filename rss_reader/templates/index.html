@@ -55,15 +55,17 @@
     </div>
 
     {% for feed in feeds %}
-    <div class="card" style="margin: 10px">
+    <div class="card">
       <div class="card-body">
-        <h4><a href="{{feed.href}}">{{feed.title}}</a></h4>
-        <small>{{feed.date}}</small>
-        <small><a href="{{ url_for('feed', feed_id=feed.feed_file.id) }}">{{feed.feed_file.title}}</a></small>
-        <p>{{feed.content|safe}}</p>
-        {% if feed.content|length > 500 %}
+        <div class="card-title" style="margin:0px">
+          <h4><a data-toggle="collapse" href="#card-collapse-{{loop.index}}" aria-expanded="false" >{{feed.title}}</a></h4>
+          <small>{{feed.date}}</small>
+          <small><a href="{{ url_for('feed', feed_id=feed.feed_file.id) }}">{{feed.feed_file.title}}</a></small>
+        </div>
+        <div class="card-text collapse" id="card-collapse-{{loop.index}}">
+          <p>{{feed.content|safe}}</p>
           <p><a href="{{feed.href}}"> continue</a></p>
-        {% endif %}
+        </div>
       </div>
     </div>
     {% endfor %}
@@ -78,3 +80,7 @@
 </div>
 
 {% endblock content %}
+
+{% block js %}
+  <script src={{ url_for("static", filename="javascript/card-expand.js") }} charset="utf-8"></script>
+{% endblock js %}

@@ -8,15 +8,23 @@
 <a href="{{ url_for('follow', rss_feed=feed.id) }}">Follow</a>
 {% endif %}
 {% for feed in feeds %}
-<hr>
-<h1><a href="{{feed.href}}">{{feed.title}}</a></h1>
-<small>{{feed.date}}</small>
-<p>{{feed.content|safe}}
-  {% if feed.content|length > 500 %}
-  <a href="{{feed.href}}"> continue</a>
-  {% endif %}
-</p>
+<div class="card">
+  <div class="card-body">
+    <div class="card-title" style="margin:0px">
+      <h3><a data-toggle="collapse" href="#card-collapse-{{loop.index}}" aria-expanded="false" >{{feed.title}}</a></h3>
+      <small>{{feed.date}}</small>
+      <small><a href="{{ url_for('feed', feed_id=feed.feed_file.id) }}">{{feed.feed_file.title}}</a></small>
+    </div>
+    <div class="card-text collapse" id="card-collapse-{{loop.index}}">
+      <p>{{feed.content|safe}}</p>
+      <p><a href="{{feed.href}}"> continue</a></p>
+    </div>
+  </div>
+</div>
 {% endfor %}
-<hr>
+
 
 {% endblock content %}
+{% block js %}
+  <script src={{ url_for("static", filename="javascript/card-expand.js") }} charset="utf-8"></script>
+{% endblock js %}
