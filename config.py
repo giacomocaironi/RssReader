@@ -14,3 +14,4 @@ class Config(object):
     # whoosh config
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     WHOOSH_BASE = "fulltextindex"
+    ADMINS = [os.environ.get("ADMIN") or None]
