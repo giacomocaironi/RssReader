@@ -132,6 +132,7 @@ def add():
                 feed = RssFeed.query.filter_by(link=form.rss_link.data).first()
                 current_user.feeds.append(feed)
                 db.session.commit()
+                flash("Congratutlations, you are now subscribed to this feed")
             except:
                 db.session.rollback()
             try:
@@ -140,6 +141,7 @@ def add():
             except:
                 db.session.rollback()
         except:
+            flash("A problem has occurred while parsing this link")
             db.session.rollback()
         return redirect(url_for("add"))
     return render_template("add.html", form=form)
