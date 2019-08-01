@@ -180,16 +180,16 @@ def unfollow(rss_feed):
 @app.route("/admin/feeds/")
 @login_required
 def admin_feed_list():
-    if current_user.username != "Kappa":
+    if current_user.username not in app.config["ADMINS"]:
         return render_template("404.html"), 404
     feeds = RssFeed.query.all()
-    return render_template("admin_feed_list.html", feeds=feeds)
+    return render_template("admin/feed_list.html", feeds=feeds)
 
 
 @app.route("/admin/feeds/<rss_feed>", methods=["GET", "POST"])
 @login_required
 def admin_feed_detail(rss_feed):
-    if current_user.username != "Kappa":
+    if current_user.username not in app.config["ADMINS"]:
         return render_template("404.html"), 404
     feed = RssFeed.query.filter_by(id=rss_feed).first_or_404()
     form = AdminModifyFeedForm()
@@ -207,4 +207,23 @@ def admin_feed_detail(rss_feed):
             db.session.rollback()
     form.title.data = feed.title
     form.link.data = feed.link
-    return render_template("admin_feed_detail.html", form=form)
+    feeds = feed.posts
+    return render_template("admin/feed_detail.html", form=form, feeds=feeds)
+
+
+@app.route("/admin/entries/")
+@login_required
+def admin_entry_list():
+    if current_user.username not in app.config["ADMINS"]:
+        return render_template("404.html"), 404
+    feeds = RssEntry.query.all()
+    return render_template("admin/entry_list.html", feeds=feeds)
+
+
+@app.route("/admin/entries/<rss_entry>", methods=["GET", "POST"])
+@login_required
+def admin_entry_detail(rss_entry):
+    if current_user.username not in app.config["ADMINS"]:
+        return render_template("404.html"), 404
+    feed = RssEntry.query.filter_by(id=rss_entry).first_or_404()
+    return render_template("admin/entry_detail.html", feed=feed)

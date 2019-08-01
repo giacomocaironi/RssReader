@@ -18,4 +18,12 @@
   <hr>
 </form>
 
+{% for feed in feeds %}
+<div class="card">
+  <div class="card-body">
+    <a href="{{url_for("admin_entry_detail", rss_entry=feed.id) }}"><h3>{{feed.title}}</h3></a>
+  </div>
+</div>
+{% endfor %}
+
 {% endblock content %}
