@@ -66,9 +66,8 @@ class RssFeed(db.Model):
 
 class RssEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    href = db.Column(
-        db.String(128)
-    )  # unique is not false to let multiple feed files have the same article
+    href = db.Column(db.String(128), unique=True)
+    # unique is not false to let multiple feed files have the same article
     feed_id = db.Column(db.ForeignKey("rss_feed.id"))
     title = db.Column(db.String(128))
     date = db.Column(db.DateTime, index=True)
