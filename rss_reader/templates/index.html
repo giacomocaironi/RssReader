@@ -5,79 +5,89 @@
 {% endblock css %}
 
 {% block content %}
-<div class="horizontal-feeds">
-  {% for feed in current_user.feeds.all() %}
-    <div class="card card-horizontal-scroll card-feed">
-      <img class="favicon" src="{{ feed.favicon }}" alt="">
-        <a href="{{ url_for('feed', feed_id=feed.id) }}">
-          <small>
-            {% if feed.title|length > 21 %}
-            {{feed.title[:21]}}...
-            {% else %}
-            {{feed.title}}
-            {% endif %}
-        </small>
-      </a>
-    </div>
-  {% endfor %}
-</div>
-<div class="row">
-  <div class="col-3 d-none d-lg-block" id="sidebar">
-      <h2>Your feeds</h2>
-      <hr>
-      <!-- <ul> -->
-        {% for feed in current_user.feeds.all() %}
-        <div class="card card-feed" style="width:100%">
-            <img class="favicon" src="{{ feed.favicon }}" alt="">
-            <a href="{{ url_for('feed', feed_id=feed.id) }}">
-              <small>
-                {% if feed.title|length > 21 %}
-                {{feed.title[:21]}}...
-                {% else %}
-                {{feed.title}}
-                {% endif %}
-            </small>
-          </a>
-        </div>
-        {% endfor %}
+{% if current_user.feeds.count() > 0 %}
+  <div class="horizontal-feeds">
+    {% for feed in current_user.feeds.all() %}
+      <div class="card card-horizontal-scroll card-feed">
+        <img class="favicon" src="{{ feed.favicon }}" alt="">
+          <a href="{{ url_for('feed', feed_id=feed.id) }}">
+            <small>
+              {% if feed.title|length > 21 %}
+              {{feed.title[:21]}}...
+              {% else %}
+              {{feed.title}}
+              {% endif %}
+          </small>
+        </a>
+      </div>
+    {% endfor %}
   </div>
-  <div class="col-12 col-lg-9">
+  <div class="row">
+    <div class="col-3 d-none d-lg-block" id="sidebar">
+        {% if current_user.feeds.count() > 0 %}
+        <h2>Your feeds</h2>
+        <hr>
+        {% endif %}
+          {% for feed in current_user.feeds.all() %}
+          <div class="card card-feed" style="width:100%">
+              <img class="favicon" src="{{ feed.favicon }}" alt="">
+              <a href="{{ url_for('feed', feed_id=feed.id) }}">
+                <small>
+                  {% if feed.title|length > 21 %}
+                  {{feed.title[:21]}}...
+                  {% else %}
+                  {{feed.title}}
+                  {% endif %}
+              </small>
+            </a>
+          </div>
+          {% endfor %}
+    </div>
+    <div class="col-12 col-lg-9">
 
-    <div class="">
+      <div class="">
+        {% if prev_url %}
+        <a class="url" href="{{ prev_url }}">Previous posts</a>
+        {% else %}
+        <a class="url" href="{{ prev_url }}" style="visibility:hidden">Previous posts</a>
+        {% endif %}
+        {% if next_url %}
+        <a class="url next-url" href="{{ next_url }}">Next posts</a>
+        {% endif %}
+      </div>
+
+      {% for feed in feeds %}
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title" style="margin:0px">
+            <h4><a data-toggle="collapse" href="#card-collapse-{{loop.index}}" aria-expanded="false" >{{feed.title}}</a></h4>
+            <small>{{feed.date}}</small>
+            <small><a href="{{ url_for('feed', feed_id=feed.feed_file.id) }}">{{feed.feed_file.title}}</a></small>
+          </div>
+          <div class="card-text collapse" id="card-collapse-{{loop.index}}">
+            <p>{{feed.content|safe}}</p>
+            <p><a href="{{feed.href}}"> continue</a></p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
       {% if prev_url %}
       <a class="url" href="{{ prev_url }}">Previous posts</a>
-      {% else %}
-      <a class="url" href="{{ prev_url }}" style="visibility:hidden">Previous posts</a>
       {% endif %}
       {% if next_url %}
       <a class="url next-url" href="{{ next_url }}">Next posts</a>
       {% endif %}
     </div>
-
-    {% for feed in feeds %}
-    <div class="card">
-      <div class="card-body">
-        <div class="card-title" style="margin:0px">
-          <h4><a data-toggle="collapse" href="#card-collapse-{{loop.index}}" aria-expanded="false" >{{feed.title}}</a></h4>
-          <small>{{feed.date}}</small>
-          <small><a href="{{ url_for('feed', feed_id=feed.feed_file.id) }}">{{feed.feed_file.title}}</a></small>
-        </div>
-        <div class="card-text collapse" id="card-collapse-{{loop.index}}">
-          <p>{{feed.content|safe}}</p>
-          <p><a href="{{feed.href}}"> continue</a></p>
-        </div>
-      </div>
-    </div>
-    {% endfor %}
-
-    {% if prev_url %}
-    <a class="url" href="{{ prev_url }}">Previous posts</a>
-    {% endif %}
-    {% if next_url %}
-    <a class="url next-url" href="{{ next_url }}">Next posts</a>
-    {% endif %}
   </div>
-</div>
+{% else %}
+  <div class="container">
+    <h3>It seems like you don't have any feed</h3>
+    <p></p>
+    <p>You can search for new feeds <a href="{{url_for('explore')}}">here</a></p>
+    <p>Or you can add directly the link of a feed <a href="{{url_for('add')}}">here</a></p>
+  </div>
+{% endif %}
 
 {% endblock content %}
 
