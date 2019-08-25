@@ -47,10 +47,10 @@ def feed(feed_id):
     return render_template("feed.html", feeds=entries, title=feed.title, feed=feed)
 
 
-@app.route("/update")
-def update():
-    parse_feeds()
-    return redirect(url_for("index"))
+# @app.route("/update")
+# def update():
+#     parse_feeds()
+#     return redirect(url_for("index"))
 
 
 @app.route("/explore")
@@ -177,53 +177,59 @@ def unfollow(rss_feed):
     return redirect(url_for("index"))
 
 
-@app.route("/admin/feeds/")
-@login_required
-def admin_feed_list():
-    if current_user.username not in app.config["ADMINS"]:
-        return render_template("404.html"), 404
-    feeds = RssFeed.query.all()
-    return render_template("admin/feed_list.html", feeds=feeds)
+# @app.route("/admin/feeds/")
+# @login_required
+# def admin_feed_list():
+#     if current_user.username not in app.config["ADMINS"]:
+#         return render_template("404.html"), 404
+#     feeds = RssFeed.query.all()
+#     return render_template("admin/feed_list.html", feeds=feeds)
+#
+#
+# @app.route("/admin/feeds/<rss_feed>", methods=["GET", "POST"])
+# @login_required
+# def admin_feed_detail(rss_feed):
+#     if current_user.username not in app.config["ADMINS"]:
+#         return render_template("404.html"), 404
+#     feed = RssFeed.query.filter_by(id=rss_feed).first_or_404()
+#     form = AdminModifyFeedForm()
+#     if form.validate_on_submit():
+#         try:
+#             if form.eliminate.data:
+#                 db.session.delete(feed)
+#                 db.session.commit()
+#                 return redirect(url_for("admin_feed_list"))
+#             else:
+#                 feed.title = form.title.data
+#                 feed.link = form.link.data
+#             db.session.commit()
+#         except:
+#             db.session.rollback()
+#     form.title.data = feed.title
+#     form.link.data = feed.link
+#     feeds = feed.posts
+#     return render_template("admin/feed_detail.html", form=form, feeds=feeds)
+#
+#
+# @app.route("/admin/entries/")
+# @login_required
+# def admin_entry_list():
+#     if current_user.username not in app.config["ADMINS"]:
+#         return render_template("404.html"), 404
+#     feeds = RssEntry.query.all()
+#     return render_template("admin/entry_list.html", feeds=feeds)
+#
+#
+# @app.route("/admin/entries/<rss_entry>", methods=["GET", "POST"])
+# @login_required
+# def admin_entry_detail(rss_entry):
+#     if current_user.username not in app.config["ADMINS"]:
+#         return render_template("404.html"), 404
+#     feed = RssEntry.query.filter_by(id=rss_entry).first_or_404()
+#     return render_template("admin/entry_detail.html", feed=feed)
 
 
-@app.route("/admin/feeds/<rss_feed>", methods=["GET", "POST"])
-@login_required
-def admin_feed_detail(rss_feed):
-    if current_user.username not in app.config["ADMINS"]:
-        return render_template("404.html"), 404
-    feed = RssFeed.query.filter_by(id=rss_feed).first_or_404()
-    form = AdminModifyFeedForm()
-    if form.validate_on_submit():
-        try:
-            if form.eliminate.data:
-                db.session.delete(feed)
-                db.session.commit()
-                return redirect(url_for("admin_feed_list"))
-            else:
-                feed.title = form.title.data
-                feed.link = form.link.data
-            db.session.commit()
-        except:
-            db.session.rollback()
-    form.title.data = feed.title
-    form.link.data = feed.link
-    feeds = feed.posts
-    return render_template("admin/feed_detail.html", form=form, feeds=feeds)
-
-
-@app.route("/admin/entries/")
-@login_required
-def admin_entry_list():
-    if current_user.username not in app.config["ADMINS"]:
-        return render_template("404.html"), 404
-    feeds = RssEntry.query.all()
-    return render_template("admin/entry_list.html", feeds=feeds)
-
-
-@app.route("/admin/entries/<rss_entry>", methods=["GET", "POST"])
-@login_required
-def admin_entry_detail(rss_entry):
-    if current_user.username not in app.config["ADMINS"]:
-        return render_template("404.html"), 404
-    feed = RssEntry.query.filter_by(id=rss_entry).first_or_404()
-    return render_template("admin/entry_detail.html", feed=feed)
+# if feeds != []:
+#     feeds = feeds.paginate(page, 25, False)
+#     next_url = url_for("index", page=feeds.next_num) if feeds.has_next else None
+#     prev_url = url_for("index", page=feeds.prev_num) if feeds.has_prev else None
