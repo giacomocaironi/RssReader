@@ -107,22 +107,22 @@ def parse_feeds():
 def add_new_entries(data, feed, base_site):
     for entry in data.entries:
         time = parser.parse(entry.updated)
+        link = entry.link
+        if link[:4] != "http":
+            link = base_site + link
         try:
             if (
-                RssEntry.query.filter_by(href=entry.link, feed_id=feed.id).count() > 0
+                RssEntry.query.filter_by(href=link, feed_id=feed.id).count() > 0
             ):  # do not add doubles
                 continue
             cleaner = Cleaner(kill_tags=["img"])
             content = cleaner.clean_html(entry.summary[:1000])
-            href = entry.link
-            if href[:4] != "http":
-                href = base_site + href
             entry_db = RssEntry(
                 title=entry.title,
                 date=time,
                 feed_id=feed.id,
                 content=content,
-                href=href,
+                href=link,
             )
             db.session.add(entry_db)
             db.session.commit()
