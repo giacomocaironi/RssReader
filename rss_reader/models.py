@@ -56,7 +56,9 @@ class RssFeed(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     link = db.Column(db.String(128), unique=True)
     favicon = db.Column(db.String(128))
-    posts = db.relationship("RssEntry", backref="feed_file", lazy="dynamic")
+    posts = db.relationship(
+        "RssEntry", cascade="all,delete", backref="feed_file", lazy="dynamic"
+    )
 
     def __repr__(self):
         return self.title

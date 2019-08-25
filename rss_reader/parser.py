@@ -87,12 +87,13 @@ def parse_feeds():
             data = responses[i].result()
             data = feedparser.parse(data.text)
             try:
-                favicon = get_site_from_link(data.feed.link) + "/favicon.ico"
+                base_site = get_site_from_link(data.feed.link)
+                favicon = base_site + "/favicon.ico"
                 feed.favicon = favicon
                 db.session.commit()
             except:
                 db.session.rollback()
-            add_new_entries(data, feed)
+            add_new_entries(data, feed, base_site)
             # logging.info(str(time.time()) + " " + str(i))
         except Exception as e:
             print(e)
@@ -103,7 +104,7 @@ def parse_feeds():
     logging.info(datetime.now())
 
 
-def add_new_entries(data, feed):
+def add_new_entries(data, feed, base_site):
     for entry in data.entries:
         time = parser.parse(entry.updated)
         try:
@@ -113,12 +114,15 @@ def add_new_entries(data, feed):
                 continue
             cleaner = Cleaner(kill_tags=["img"])
             content = cleaner.clean_html(entry.summary[:1000])
+            href = entry.link
+            if href[:4] != "http":
+                href = base_site + href
             entry_db = RssEntry(
                 title=entry.title,
                 date=time,
                 feed_id=feed.id,
                 content=content,
-                href=entry.link,
+                href=href,
             )
             db.session.add(entry_db)
             db.session.commit()
